@@ -57,23 +57,23 @@ class ApiController extends Controller
         } catch (Exception $e) {
             dd("Error: ". $e->getMessage());
         }
-        $url = "http://202.164.208.226/smsapi";
-        $data = [
-            "api_key" => "C20013386235902a575991.44900461",
-            "type" => "text",
-            "contacts" => "88" . $phone,
-            "senderid" => "8809612442105",
-            "msg" => "Your ToletX verification code " . $otp,
-        ];
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
+        // $url = "http://202.164.208.226/smsapi";
+        // $data = [
+        //     "api_key" => "C20013386235902a575991.44900461",
+        //     "type" => "text",
+        //     "contacts" => "88" . $phone,
+        //     "senderid" => "8809612442105",
+        //     "msg" => "Your ToletX verification code " . $otp,
+        // ];
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // $response = curl_exec($ch);
+        // curl_close($ch);
+        // return $response;
     }
 
     //end sms api
@@ -285,43 +285,65 @@ class ApiController extends Controller
     public function customer_profile_update(Request $request, $id)
     {
         $user = User::find($id);
-        if ($user->phone != $request->phone) {
-            $user->phone = $request->phone;
-            $user->update();
-        }
-        $filename = '';
-        if ($request->hasFile('customer_image')) {
-            $destination = 'uploads/customer/' . $user->image;
-            if (File::exists($destination)) {
-                File::delete($destination);
+        if($user)
+        {
+            $validator = Validator::make($request->all(), [
+                'customer_street_name' =>  'required',
+                'customer_street_number' =>  'required',
+                'customer_apt' =>  'required',
+                'customer_city' =>  'required',
+                'customer_state' =>  'required',
+                'customer_zip' =>  'required',
+            ]);
+            if ($validator->fails()) {
+                return response(['errors' => $validator->errors()->all()], 401);
             }
-            $file = $request->file('customer_image');
-            if ($file->isValid()) {
-                $filename = "customer" . date('Ymdhms') . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('customer', $filename);
+            if ($user->phone != $request->phone) {
+                $user->phone = $request->phone;
+                $user->update();
             }
+            $filename = '';
+            if ($request->hasFile('image')) {
+                $destination = 'uploads/customer/' . $user->image;
+                if (File::exists($destination)) {
+                    File::delete($destination);
+                }
+                $file = $request->file('image');
+                if ($file->isValid()) {
+                    $filename = "customer" . date('Ymdhms') . '.' . $file->getClientOriginalExtension();
+                    $file->storeAs('customer', $filename);
+                }
+            }
+            if ($filename != null) {
+                $user->image = $filename;
+                $user->update();
+            }
+            $customer = customer_info::where('u_id', '=', $id)->update([
+                'cus_add_status' => '1',
+                'customer_address' => $request->customer_address,
+                'customer_street_name' => $request->customer_street_name,
+                'customer_street_number' => $request->customer_street_number,
+                'customer_apt' => $request->customer_apt,
+                'customer_city' => $request->customer_city,
+                'customer_state' => $request->customer_state,
+                'customer_zip' => $request->customer_zip,
+                'gender' => $request->gender,
+            ]);
+            $response = [
+                'success' => true,
+                'customer' => $user,
+                "message" => 'Customer information have been successfully Updated.'
+            ];
+            return response($response, 200);
+        }else{
+            $response = [
+                'success' => false,
+                "message" => 'Customer not found.'
+            ];
+            return response($response, 200);
         }
-        if ($filename != null) {
-            $user->image = $filename;
-            $user->update();
-        }
-        $customer = customer_info::where('u_id', '=', $id)->update([
-            'cus_add_status' => '1',
-            'customer_address' => $request->customer_address,
-            'customer_street_name' => $request->customer_street_name,
-            'customer_street_number' => $request->customer_street_number,
-            'customer_apt' => $request->customer_apt,
-            'customer_city' => $request->customer_city,
-            'customer_state' => $request->customer_state,
-            'customer_zip' => $request->customer_zip,
-            'gender' => $request->gender,
-        ]);
-        $response = [
-            'success' => true,
-            'customer' => $user,
-            "message" => 'Customer information have been successfully Updated.'
-        ];
-        return response($response, 200);
+
+        
     }
 
     // Service provider Profile
