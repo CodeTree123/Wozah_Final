@@ -390,11 +390,11 @@ class ApiController extends Controller
         }
     }
 
-    public function addtocart(Request $request)
+    public function addtocart(Request $request,$rowId)
     {
-        $service = service::Join('subcatagory_infos', 'services.subcatagory_id', '=', 'subcatagory_infos.id')->where('services.id', '=', $request->id)->first(['services.*', 'subcatagory_infos.subcatagory_name']);
+        $service = service::Join('subcatagory_infos', 'services.subcatagory_id', '=', 'subcatagory_infos.id')->where('services.id', '=', $rowId)->first(['services.*', 'subcatagory_infos.subcatagory_name']);
         $cart = Cart::add([
-            'id' => $request->id,
+            'id' => $rowId,
             'name' => $service->service_name,
             'qty' => 1,
             'price' => $service->price,

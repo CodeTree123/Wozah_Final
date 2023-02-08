@@ -31,7 +31,7 @@ Route::post('loginWithOtp', [ApiController::class, 'loginWithOtp']);
 Route::post('customer/login', [ApiController::class, 'customer_login']);
 Route::get('customer/profile/information/{id}', [ApiController::class, 'customer_Profile']);
 Route::post('customer/profile/update/{id}', [ApiController::class, 'customer_profile_update']);
-Route::post('customer/cart/addtocart', [ApiController::class, 'addtocart']);
+Route::post('customer/cart/addtocart/{rowId}', [ApiController::class, 'addtocart']);
 Route::get('customer/cart/delete/{rowId}', [ApiController::class, 'cartdelete']);
 Route::get('customer/cart/content/{rowId}', [ApiController::class, 'cartcontent']);
 Route::post('customer/place_order/{id}', [ApiController::class, 'place_order']);
