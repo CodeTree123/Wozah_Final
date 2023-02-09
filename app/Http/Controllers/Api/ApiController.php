@@ -534,23 +534,28 @@ class ApiController extends Controller
         }
     }
 
+   
     public function shop_catagory($id)
     {
         $catagories = catagory_info::where('u_id', $id)->get();
-        if ($catagories) {
-            $response = [
-                'success' => true,
-                'shop catagories' => $catagories,
-                "message" => 'catagories List.'
-            ];
-            return response($response, 200);
-        } else {
-            $response = [
-                'success' => false,
-                "message" => 'No category found.'
-            ];
-            return response($response, 200);
+        foreach($catagories as $catagory){
+            $sub_categories = subcatagory_info::where('u_id', $id)->where('catagory_id',$catagories->id)->get();
+            if ($catagories) {
+                $response = [
+                    'success' => true,
+                    'shop catagories' => $catagories.$sub_categories,
+                    "message" => 'catagories List.'
+                ];
+                return response($response, 200);
+            } else {
+                $response = [
+                    'success' => false,
+                    "message" => 'No category found.'
+                ];
+                return response($response, 200);
+            }
         }
+        
     }
 
     public function shop_sub_catagory($id, $cat_id)
@@ -573,7 +578,8 @@ class ApiController extends Controller
 
     public function shop_service($user_id)
     {
-        $services = service::where('u_id', $user_id)->get();
+        // $services = service::where('u_id', $user_id)->get();
+        $services =   catagory_info::rightJoin('subcatagory_infos', 'catagory_infos.u_id', '=', 'subcatagory_infos.u_id')->where('catagory_infos.u_id', $user_id)->get(['catagory_infos.*'],[ 'subcatagory_infos.*']);
         if ($services) {
             $response = [
                 'success' => true,
@@ -768,7 +774,7 @@ class ApiController extends Controller
         $sp = User::where('role_id', '!=', 1)->where('role_id', '!=', 4)->get();
         $response = [
             'success' => true,
-            'servive_Provider' => $sp,
+            'service_Provider' => $sp,
         ];
         return response($response, 200);
     }
