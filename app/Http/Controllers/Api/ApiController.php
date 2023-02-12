@@ -535,15 +535,15 @@ class ApiController extends Controller
     }
 
    
-    public function shop_catagory($id)
+    public function shop_catagory($user_id,$category_id)
     {
-        $catagories = catagory_info::where('u_id', $id)->get();
-        foreach($catagories as $catagory){
-            $sub_categories = subcatagory_info::where('u_id', $id)->where('catagory_id',$catagories->id)->get();
-            if ($catagories) {
+        $catagory = catagory_info::where('u_id', $user_id)->where('id', $category_id)->first();
+            $sub_categories = subcatagory_info::where('u_id', $user_id)->where('catagory_id',$category_id)->get();
+            if ($catagory) {
                 $response = [
                     'success' => true,
-                    'shop catagories' => $catagories.$sub_categories,
+                    'shop_catagory' => $catagory,
+                    'shop_sub_catagory' =>$sub_categories,
                     "message" => 'catagories List.'
                 ];
                 return response($response, 200);
@@ -554,7 +554,7 @@ class ApiController extends Controller
                 ];
                 return response($response, 200);
             }
-        }
+
         
     }
 

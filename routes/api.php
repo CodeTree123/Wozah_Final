@@ -45,7 +45,7 @@ Route::post('shop/login', [ApiController::class, 'shop_login']);
 Route::get('shop/profile/{id}', [ApiController::class, 'single_shop_details']);
 Route::get('shop_documents/{id}', [ApiController::class, 'shop_documents']);
 
-Route::get('shop/catagory/{id}', [ApiController::class, 'shop_catagory']);
+Route::get('shop/catagory/{user_id}/{category_id}', [ApiController::class, 'shop_catagory']);
 Route::get('shop/details/{id}/{cat_id}', [ApiController::class, 'shop_sub_catagory']);
 
 Route::get('/shop/service/{user_id}', [ApiController::class, 'shop_service']);
