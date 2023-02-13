@@ -535,16 +535,15 @@ class ApiController extends Controller
     }
 
    
-    public function shop_catagory($user_id,$category_id)
+    public function shop_catagory($user_id)
     {
-        $catagory = catagory_info::where('u_id', $user_id)->where('id', $category_id)->first();
-            $sub_categories = subcatagory_info::where('u_id', $user_id)->where('catagory_id',$category_id)->get();
+        $catagory = catagory_info::where('u_id', $user_id)->get();
+            
             if ($catagory) {
                 $response = [
                     'success' => true,
                     'shop_catagory' => $catagory,
-                    'shop_sub_catagory' =>$sub_categories,
-                    "message" => 'catagories List.'
+                    "message" => 'catagories List.' 
                 ];
                 return response($response, 200);
             } else {
@@ -554,17 +553,38 @@ class ApiController extends Controller
                 ];
                 return response($response, 200);
             }
-
+        
+    }
+    public function shop_single_catagory($user_id,$category_id)
+    {
+            $sub_categories = subcatagory_info::where('u_id', $user_id)->where('catagory_id',$category_id)->get();
+            if ($sub_categories) {
+                $response = [
+                    'success' => true,
+                    'shop_sub_catagory' =>$sub_categories,
+                    "message" => 'Sub_catagories List.'
+                ];
+                return response($response, 200);
+            } else {
+                $response = [
+                    'success' => false,
+                    "message" => 'No sub category found.'
+                ];
+                return response($response, 200);
+            }
         
     }
 
-    public function shop_sub_catagory($id, $cat_id)
+    public function shop_sub_catagory($user_id,$sub_category_id)
     {
-        $subcatagories = subcatagory_info::where('u_id', $id)->where('catagory_id', $cat_id)->get();
-        if ($subcatagories) {
+        $services = service::where('u_id', $user_id)->where('subcatagory_id', $sub_category_id)->get();
+        // dd($services);
+        if ($services) {
             $response = [
                 'success' => true,
-                'sub-Category' => $subcatagories,
+                'services' => $services,
+                "message" => 'sub-Category service list.'
+
             ];
             return response($response, 200);
         } else {
