@@ -58,24 +58,24 @@ class Otp_verification_login
       }
       return $next($request);
     } else {
-    
-      $receiver_number = $request->phone;
+
+      $receiver_number = "+". 88 . $request->phone;
       $phoneinfo = otp_verify::where('mobile', $receiver_number)->first();
       $otp = rand(1000, 9999);
 
       // $this->send_sms($request->phone, $otp);
-      $message = "Your OTP is:-" . $otp;
+      $message =  $otp;
       $account_sid = getenv("TWILIO_SID");
       $auth_token = getenv("TWILIO_TOKEN");
       $twilio_number = getenv("TWILIO_FROM");
 
       $client = new Client($account_sid, $auth_token);
       $client->messages->create($receiver_number,[
-          'from' => $twilio_number, 
-          'body' => $message
+          'from' => $twilio_number,
+          'body' =>"Your Wozah Varification Code is -". $message
             ]);
 
-            
+
       if (!$phoneinfo) {
         otp_verify::create([
           'mobile' => $request->phone,
