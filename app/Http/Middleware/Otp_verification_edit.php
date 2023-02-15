@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\otp_verify;
 use Auth;
 use Carbon\Carbon;
+use Exception;
+use Twilio\Rest\Client;
 
 class Otp_verification_edit
 {
@@ -19,28 +21,7 @@ class Otp_verification_edit
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
 
-     //sms api
-      function send_sms($phone, $otp)
-      {
-          $url = "http://202.164.208.226/smsapi";
-          $data = [
-              "api_key" => "C20013386235902a575991.44900461",
-              "type" => "text",
-              "contacts" => "88" . $phone,
-              "senderid" => "8809612442105",
-              "msg" => "Your Wozah verification code " . $otp,
-          ];
-          $ch = curl_init();
-          curl_setopt($ch, CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_POST, 1);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-          $response = curl_exec($ch);
-          curl_close($ch);
-          return $response;
-      }
-      //end sms api
+
     public function handle(Request $request, Closure $next)
     {
         if ($request->otp) {
@@ -62,11 +43,22 @@ class Otp_verification_edit
             }
             return $next($request);
           } else {
-            $phoneinfo = otp_verify::where('mobile', $request->phone)->first();
+            $receiver_number = "+". 88 . $request->phone;
+            $phoneinfo = otp_verify::where('mobile', $receiver_number)->first();
             // dd($phoneinfo);
             $otp = rand(1000,9999);
             // $this->send_sms($request->phone, $otp);
-            $message = "Your OTP is:-".$otp;
+            $message =  $otp;
+            $account_sid = getenv("TWILIO_SID");
+            $auth_token = getenv("TWILIO_TOKEN");
+            $twilio_number = getenv("TWILIO_FROM");
+            // dd($receiver_number,$phoneinfo,$otp,$message,$account_sid,$auth_token,$twilio_number);
+
+            $client = new Client($account_sid, $auth_token);
+            $client->messages->create($receiver_number,[
+                'from' => $twilio_number,
+                'body' =>"Your Wozah Varification Code is -". $message
+                  ]);
               if(!$phoneinfo){
                 otp_verify::create([
                   'mobile'=>$request->phone,
