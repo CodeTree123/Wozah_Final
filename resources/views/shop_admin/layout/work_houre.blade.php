@@ -29,19 +29,19 @@
                 @if($work_hour->opening_time == "")
                 <i class="fa-lg fa-solid fa-xmark"></i>
                 @else
-                {{\Carbon\Carbon::parse($work_hour->opening_time)->format('H:i:s')}}; 
+                {{\Carbon\Carbon::parse($work_hour->opening_time)->format('g:i:s A')}} 
                 @endif
             </td>
             <td>
                 @if($work_hour->closing_time == "")
                 <i class="fa-lg fa-solid fa-xmark"></i>
                 @else
-                {{$work_hour->closing_time}}
+                {{\Carbon\Carbon::parse($work_hour->closing_time)->format('g:i:s A')}}
                 @endif
             </td>
             <td>
                 @if($work_hour->day_off == "day_off")
-                <i class="fa-lg fa-solid fa-check"></i>
+                <i class="fa-lg fa-solid fa-check "></i>
                 @else
                 <i class="fa-lg fa-solid fa-xmark "></i>
                 @endif

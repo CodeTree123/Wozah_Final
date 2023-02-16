@@ -534,7 +534,47 @@ class ApiController extends Controller
         }
     }
 
-   
+    public function shop_all_catagory($text)
+    {
+        $catagory = catagory_info::where('catagory_name','like', '%' . $text . '%')->paginate(1);
+
+        if ($catagory) {
+            $response = [
+                'success' => true,
+                'shop_catagory' => $catagory,
+                "message" => 'catagories List.' 
+            ];
+            return response($response, 200);
+        } else {
+            $response = [
+                'success' => false,
+                "message" => 'No category found.'
+            ];
+            return response($response, 200);
+        }
+
+        
+    }
+    public function shop_all_sub_catagory($category_id)
+    {
+        $catagory = subcatagory_info::where('catagory_id',$category_id)->paginate(5  );
+            
+            if ($catagory) {
+                $response = [
+                    'success' => true,
+                    'shop_catagory' => $catagory,
+                    "message" => 'catagories List.' 
+                ];
+                return response($response, 200);
+            } else {
+                $response = [
+                    'success' => false,
+                    "message" => 'No category found.'
+                ];
+                return response($response, 200);
+            }
+        
+    }
     public function shop_catagory($user_id)
     {
         $catagory = catagory_info::where('u_id', $user_id)->get();

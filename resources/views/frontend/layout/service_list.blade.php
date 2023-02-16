@@ -23,9 +23,11 @@
                                  </span>
                              </div>
                              <div class="shop-time">
+                                @foreach($workhours as $key => $hour)
                                  <span>
-                                     Tues-Sat <br> 09:00am-11:00pm
+                                     {{$hour->day_name}} ({{\Carbon\Carbon::parse($hour->opening_time)->format('g:i:s A')}}-{{\Carbon\Carbon::parse($hour->closing_time)->format('g:i:s A')}})
                                  </span>
+                                 @endforeach
                              </div>
                          </div>
                      </div>

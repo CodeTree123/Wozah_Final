@@ -18,12 +18,9 @@
                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
                         >Get Started</button>
                     </div>
-
-
                 </div>
             </div>
         </div>
-
         <section class="  " data-aos="zoom-in-up">
             <div class="container">
                 <h2 class="mb-3"> Popular Salon & Spa Centers </h2>
