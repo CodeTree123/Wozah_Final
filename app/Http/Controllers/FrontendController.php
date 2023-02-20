@@ -34,6 +34,49 @@ class FrontendController extends Controller
     }
     public function content()
     {
+        $today = Carbon::now()->format('Y/m/d H:i:s');
+        // $weekday = Carbon::now()->isoFormat('dddd');
+
+        // $users = User::where('role_id', '2')->where('user_status', '1')->get();
+        // $times = work_hour::all();
+
+        // foreach($users as $user){
+        //     foreach($times as $time){
+        //         if($user->id == $time->u_id){
+        //             if($weekday == $time->day_name || $time->day_off != "day_off"){
+        //                 if($user->active_status == 0 && $time->status == 0){
+        //                     if($today >= $time->opening_time){
+        //                         $user->update([
+        //                             'active_status' => 1
+        //                         ]);
+        //                         $time->update([
+        //                             'status' => 1
+        //                         ]);
+        //                     }
+        //                 }
+        //                 if($user->active_status == 1 && $time->status == 1){
+        //                     if($today >= $time->closing_time){
+        //                         $time->update([
+        //                             'status' => 1
+        //                         ]);
+        //                     }
+        //                 }
+        //             }else{
+        //                 $user->update([
+        //                     'active_status' => 0
+        //                 ]);
+
+        //                 $time->update([
+        //                     'status' => 0
+        //                 ]);
+        //             }
+        //         }
+        //     } 
+        // }
+
+        // return $users;
+        return $today;
+
         $shops = User::where('role_id', '2')->where('user_status', '1')->get();
         $individuals = User::where('role_id', '3')->where('emp_status', '0')->where('user_status', '1')->where('sp_work_status', '0')->get();
 
@@ -93,15 +136,14 @@ class FrontendController extends Controller
         $user = User::where('id', $u_id)->first()->role_id;
         if ($user == '2') {
             $shop_info = shop_info::Join('users', 'shop_infos.u_id', '=', 'users.id')->where('shop_infos.u_id', '=', $u_id)->first(['shop_infos.*', 'users.shop_name', 'users.phone', 'users.email', 'users.image']);
-       
         }
         if ($user == '3') {
             $shop_info = individual_info::Join('users', 'individual_infos.u_id', '=', 'users.id')->where('individual_infos.u_id', '=', $u_id)->first(['individual_infos.*', 'users.first_name', 'users.last_name', 'users.phone', 'users.email', 'users.image']);
         }
-        $workhours=work_hour::where('u_id',$u_id)->get();
+        $workhours = work_hour::where('u_id', $u_id)->get();
         $catagories = catagory_info::where('u_id', '=', $u_id)->get();
         $subcatagories = subcatagory_info::where('u_id', '=', $u_id)->get();
-        return view('frontend.layout.service_list', compact('shop_info', 'catagories', 'subcatagories','workhours'));
+        return view('frontend.layout.service_list', compact('shop_info', 'catagories', 'subcatagories', 'workhours'));
     }
     public function service_detail($u_id, $sub_id)
     {

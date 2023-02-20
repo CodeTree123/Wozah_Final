@@ -72,12 +72,7 @@
                                 </div>
 
                                 @if(old('verify'))
-                                
-                                    @if (Session::has('otp_msg'))
-                                        <div class="alert alert-success">
-                                            <p>{!! Session::get('otp_msg') !!}</p>
-                                        </div>
-                                    @endif
+
 
                                     <div class="col-12">
                                         <label for="otp" class="form-label">Verify Otp.</label>
@@ -175,11 +170,6 @@
                                 </div>
                                 @if(old('verify'))
                                 
-                                    @if (Session::has('otp_msg'))
-                                        <div class="alert alert-success">
-                                            <p>{!! Session::get('otp_msg') !!}</p>
-                                        </div>
-                                    @endif
 
                                     <div class="col-12">
                                         <label for="otp" class="form-label">Verify Otp.</label>

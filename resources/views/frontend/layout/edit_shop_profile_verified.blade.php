@@ -23,7 +23,7 @@
                           <input type="hidden" class="form-control" name="id" value="{{ Auth::user()->id }}" id="sLegalName">
                             <label for="sLegalName" class="form-label">Business Legal Name</label>
                             <input type="text" class="form-control" name="b_legal_name" value="{{ $list[0]->b_legal_name }}" id="sLegalName">
-                        </div>
+                          </div>
 
                         <div class="col-12">
                             <label for="sBusinessDBA" class="form-label">Business DBA</label>

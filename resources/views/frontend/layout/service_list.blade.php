@@ -12,9 +12,9 @@
                                  <h2 class="d-inline ">
                                      <!-- Vista Salon & Spa -->
                                      @if($shop_info->shop_name != null)
-                                        {{$shop_info->shop_name}}
+                                     {{$shop_info->shop_name}}
                                      @else
-                                        {{$shop_info->first_name}} {{$shop_info->last_name}}
+                                     {{$shop_info->first_name}} {{$shop_info->last_name}}
                                      @endif
                                  </h2>
                                  <span class="shop-rating-field">
@@ -23,10 +23,12 @@
                                  </span>
                              </div>
                              <div class="shop-time">
-                                @foreach($workhours as $key => $hour)
+                                 @foreach($workhours as $key => $hour)
+                                 @if($hour->day_name == 'Saturday')
                                  <span>
                                      {{$hour->day_name}} ({{\Carbon\Carbon::parse($hour->opening_time)->format('g:i:s A')}}-{{\Carbon\Carbon::parse($hour->closing_time)->format('g:i:s A')}})
                                  </span>
+                                 @endif
                                  @endforeach
                              </div>
                          </div>
