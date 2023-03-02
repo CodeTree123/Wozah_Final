@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\OrderMailInfo;
+use App\Models\api_cart;
 use App\Models\catagory_info;
 use App\Models\order;
 use App\Models\work_hour;
@@ -390,47 +391,73 @@ class ApiController extends Controller
         }
     }
 
-    public function addtocart(Request $request,$rowId)
+    public function addtocart(Request $request)
     {
-        $service = service::Join('subcatagory_infos', 'services.subcatagory_id', '=', 'subcatagory_infos.id')->where('services.id', '=', $rowId)->first(['services.*', 'subcatagory_infos.subcatagory_name']);
-        $cart = Cart::add([
-            'id' => $rowId,
-            'name' => $service->service_name,
-            'qty' => 1,
-            'price' => $service->price,
-            'weight' => 0,
-            'options' => [
-                'subcat_name' => $service->subcatagory_name,
-                'sp_id' => $service->u_id,
-            ]
+        $validator = Validator::make($request->all(), [
+            'u_id' => 'required',
+            'sub_cat_id' => 'required',
+            'service_id' => 'required',
+            'quantity' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response(['errors' => $validator->errors()->all()], 401);
+        }
+        
+       $service_price = service::where('subcatagory_id',$request->sub_cat_id)->where('id',$request->service_id)->first(); 
+       $total=(float)str_replace(',','',$service_price->price);
+       $grand_total= $total*$request->quantity;
+      
+       $cart_service = api_cart::create([
+                 'u_id' => $request->u_id,
+            'sub_cat_id'=> $request->sub_cat_id,
+            'service_id'=> $request->service_id,
+            'quantity'=> $request->quantity,
+            'total'=> $grand_total,
+
         ]);
 
         $response = [
             'success' => true,
-            'add to cart services' => $cart,
+            'add to cart services' => $cart_service,
             "message" => 'Product Added to the Cart.'
         ];
         return response($response, 200);
     }
 
-    public function cartdelete($rowId)
+    public function cartdelete($user_id,$cart_id)
     {
-        Cart::remove($rowId);
-        $response = [
-            'success' => true,
-            "message" => 'product Removed From the Cart.'
-        ];
-        return response($response, 200);
+        $services = api_cart::where('u_id',$user_id)->count();
+        $items = api_cart::where('u_id',$user_id)->get();
+
+            $delete_item = api_cart::where('id',$cart_id)->delete();
+            $response = [
+                'success' => true,
+                "message" => 'product Removed From the Cart.'
+            ];
+            return response($response, 200);
+
+       
     }
 
-    public function cartcontent()
+    public function cartcontent($user_id)
     {
-        $carts = Cart::content();
-        $response = [
-            'success' => true,
-            'Cart content' => $carts
-        ];
-        return response($response, 200);
+        $service = api_cart::where('u_id',$user_id)->get();
+        $grand_total = api_cart::where('u_id',$user_id)->sum('total');
+        if($service){
+            $response = [
+                'success' => true,
+                'Cart content' => $service,
+                'Cart total' => $grand_total,
+            ];
+            return response($response, 200);
+        }else{
+            $response = [
+                'success' => true,
+                "message" => 'NO Cart item Found.'
+            ];
+            return response($response, 200);
+        }
+
     }
 
     public function place_order(Request $request, $id)

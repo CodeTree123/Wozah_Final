@@ -35,47 +35,87 @@ class FrontendController extends Controller
     public function content()
     {
         $today = Carbon::now()->format('Y/m/d H:i:s');
-        // $weekday = Carbon::now()->isoFormat('dddd');
+        $weekday = Carbon::now()->isoFormat('dddd');
 
-        // $users = User::where('role_id', '2')->where('user_status', '1')->get();
-        // $times = work_hour::all();
+        $users = User::where('role_id', '2')->where('user_status', '1')->get();
+        $times = work_hour::all();
 
-        // foreach($users as $user){
-        //     foreach($times as $time){
-        //         if($user->id == $time->u_id){
-        //             if($weekday == $time->day_name || $time->day_off != "day_off"){
-        //                 if($user->active_status == 0 && $time->status == 0){
-        //                     if($today >= $time->opening_time){
-        //                         $user->update([
-        //                             'active_status' => 1
-        //                         ]);
-        //                         $time->update([
-        //                             'status' => 1
-        //                         ]);
+        // // foreach ($users as $user) {
+        // //     foreach ($times as $time) {
+        // //         if ($user->id == $time->u_id) {
+        // //             if ($time->day_off != "day_off") {
+        // //                 if ($weekday == $time->day_name) {
+        // //                     if ($user->active_status == 0 && $time->status == 0) {
+        // //                         if ($today >= $time->opening_time) {
+        // //                             $user->update([
+        // //                                 'active_status' => 1
+        // //                             ]);
+        // //                             $time->update([
+        // //                                 'status' => 1
+        // //                             ]);
+        // //                             // dd($user->active_status,$time->status,"first id ");
+        // //                         }
+        // //                     } elseif ($user->active_status == 1 && $time->status == 1) {
+        // //                         if ($today >= $time->closing_time) {
+        // //                             $user->update([
+        // //                                 'active_status' => 0
+        // //                             ]);
+        // //                             $time->update([
+        // //                                 'status' => 0
+        // //                             ]);
+        // //                             // dd($user->id,$user->active_status,$time->id,$time->status,"else if 1 1 ");
+        // //                         }
+        // //                     } else {
+        // //                         $user->update([
+        // //                             'active_status' => 0
+        // //                         ]);
+        // //                         $time->update([
+        // //                             'status' => 0
+        // //                         ]);
+        //                         // dd($user->active_status,$time->status);
         //                     }
+        //                     // if($user->active_status == 1 && $time->status == 1){
+        //                     //     if($today >= $time->closing_time){
+        //                     //         $time->update([
+        //                     //             'status' => 1
+        //                     //         ]);
+        //                     //     }
+        //                     // }
         //                 }
-        //                 if($user->active_status == 1 && $time->status == 1){
-        //                     if($today >= $time->closing_time){
-        //                         $time->update([
-        //                             'status' => 1
-        //                         ]);
-        //                     }
-        //                 }
-        //             }else{
-        //                 $user->update([
-        //                     'active_status' => 0
-        //                 ]);
+        //                 // else{
+        //                 //     // dd($user->id,$time->id);
+        //                 //     if($user->active_status == 0){
+        //                 //         $user->update([
+        //                 //             'active_status' => 0
+        //                 //         ]);
 
-        //                 $time->update([
-        //                     'status' => 0
-        //                 ]);
-        //             }
-        //         }
-        //     } 
-        // }
+        //                 //         $time->update([
+        //                 //             'status' => 0
+        //                 //         ]);
+        //                 //     }else{
+        //                 //         $user->update([
+        //                 //             'active_status' => 1
+        //                 //         ]);
+        //                 //         $time->update([
+        //                 //             'status' => 0
+        //                 //         ]);
+        //                 //     }
+        //                 // }
+        //             // }
+        //             // else{
+        //             //     $user->update([
+        //             //         'active_status' => 0
+        //             //     ]);
 
-        // return $users;
-        return $today;
+        //             //     $time->update([
+        //             //         'status' => 0
+        //             //     ]);
+        //             // }
+        // //         }
+        // //     }
+        // // }
+        // // return $users;
+        // // return $today;
 
         $shops = User::where('role_id', '2')->where('user_status', '1')->get();
         $individuals = User::where('role_id', '3')->where('emp_status', '0')->where('user_status', '1')->where('sp_work_status', '0')->get();
